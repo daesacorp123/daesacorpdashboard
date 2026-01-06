@@ -1,0 +1,6 @@
+/* Simple Font Awesome */ 
+.fa { display: inline-block; font-style: normal; } 
+.fa-globe:before { content: "??"; font-size: 2rem; } 
+.fa-google:before { content: "??"; font-size: 2rem; } 
+.fa-facebook:before { content: "??"; font-size: 2rem; } 
+.fa-search:before { content: "??"; } 

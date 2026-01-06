@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Dashboard Real-time - DaeSaCorp</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles for real-time dashboard */
+        :root {
+            --primary: #4361ee;
+            --secondary: #7209b7;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --facebook: #1877f2;
+            --google: #34a853;
+            --tiktok: #000000;
+        }
+        
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-left h1 {
+            margin: 0;
+            color: var(--primary);
+        }
+        
+        .header-left p {
+            color: #6b7280;
+            margin: 5px 0 0 0;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .status-badge {
+            background: #10b981;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .realtime-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Overview Metrics */
+        .overview-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .metric-title {
+            font-size: 0.95rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .metric-icon {
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: #1f2937;
+        }
+        
+        .metric-change {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .change-up {
+            color: var(--success);
+        }
+        
+        .change-down {
+            color: var(--danger);
+        }
+        
+        /* Platform Performance */
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .platform-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .platform-card.facebook {
+            border-left-color: var(--facebook);
+        }
+        
+        .platform-card.google {
+            border-left-color: var(--google);
+        }
+        
+        .platform-card.tiktok {
+            border-left-color: var(--tiktok);
+        }
+        
+        .platform-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .platform-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .platform-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .platform-stat {
+            text-align: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        /* Real-time Events */
+        .realtime-events {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 40px;
+        }
+        
+        .events-list {
+            margin-top: 20px;
+        }
+        
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .event-item:last-child {
+            border-bottom: none;
+        }
+        
+        .event-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .event-conversion { background: var(--success); }
+        .event-click { background: var(--primary); }
+        .event-impression { background: var(--secondary); }
+        .event-spend { background: var(--warning); }
+        
+        .event-content {
+            flex: 1;
+        }
+        
+        .event-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .event-time {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        /* Controls */
+        .dashboard-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .last-updated {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f4f6;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .overview-metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .platforms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dashboard-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .control-buttons {
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>DaeSaCorp</span>
+            </div>
+            <a href="index.html" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="demo-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="header-left">
+                <h1>📊 Real-time Marketing Dashboard</h1>
+                <p>Live monitoring of advertising performance across all platforms</p>
+            </div>
+            <div class="header-right">
+                <span class="status-badge">
+                    <i class="fas fa-circle"></i> LIVE
+                </span>
+                <div class="realtime-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>Real-time data updates every 30s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overview Metrics -->
+        <div class="overview-metrics" id="overviewMetrics">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Total Spend</span>
+                    <span class="metric-icon">💰</span>
+                </div>
+                <div class="metric-value" id="totalSpend">Rp 12.500.000</div>
+                <div class="metric-change change-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+12.5% from last month</span>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Conversions</span>
+                    <span class="metric-icon">🎯</span>
+                </div>
+                <div class="metric-value" id="totalConversions">1,248</div>
+                <div class="metric-change change-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+8.3% from last month</span>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">ROAS</span>
+                    <span class="metric-icon">📈</span>
+                </div>
+                <div class="metric-value" id="roas">4.2x</div>
+                <div class="metric-change change-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+0.3x from target</span>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">CTR</span>
+                    <span class="metric-icon">👆</span>
+                </div>
+                <div class="metric-value" id="ctr">3.8%</div>
+                <div class="metric-change change-down">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>-0.2% from average</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Performance -->
+        <h2 style="margin-bottom: 20px;">Platform Performance</h2>
+        <div class="platforms-grid" id="platformsGrid">
+            <!-- Facebook Card -->
+            <div class="platform-card facebook">
+                <div class="platform-header">
+                    <div class="platform-name">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook & Instagram</span>
+                    </div>
+                    <span class="status-badge" style="background: var(--facebook);">Active</span>
+                </div>
+                <div class="platform-stats">
+                    <div class="platform-stat">
+                        <div class="stat-value" id="fbSpend">Rp 7.5jt</div>
+                        <div class="stat-label">Spend</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="fbConversions">685</div>
+                        <div class="stat-label">Conversions</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="fbCTR">2.5%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="fbCPC">Rp 2.4k</div>
+                        <div class="stat-label">Avg CPC</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Google Card -->
+            <div class="platform-card google">
+                <div class="platform-header">
+                    <div class="platform-name">
+                        <i class="fab fa-google"></i>
+                        <span>Google Ads</span>
+                    </div>
+                    <span class="status-badge" style="background: var(--google);">Active</span>
+                </div>
+                <div class="platform-stats">
+                    <div class="platform-stat">
+                        <div class="stat-value" id="googleSpend">Rp 5jt</div>
+                        <div class="stat-label">Spend</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="googleConversions">563</div>
+                        <div class="stat-label">Conversions</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="googleCTR">2.25%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="googleCPC">Rp 1.85k</div>
+                        <div class="stat-label">Avg CPC</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TikTok Card -->
+            <div class="platform-card tiktok">
+                <div class="platform-header">
+                    <div class="platform-name">
+                        <i class="fab fa-tiktok"></i>
+                        <span>TikTok Ads</span>
+                    </div>
+                    <span class="status-badge" style="background: var(--tiktok);">Testing</span>
+                </div>
+                <div class="platform-stats">
+                    <div class="platform-stat">
+                        <div class="stat-value" id="tiktokSpend">Rp 2.5jt</div>
+                        <div class="stat-label">Spend</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="tiktokConversions">250</div>
+                        <div class="stat-label">Conversions</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="tiktokCTR">2.5%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                    <div class="platform-stat">
+                        <div class="stat-value" id="tiktokCPC">Rp 2k</div>
+                        <div class="stat-label">Avg CPC</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Events -->
+        <div class="realtime-events">
+            <h3 style="margin: 0;">
+                <i class="fas fa-bolt"></i> Real-time Events
+            </h3>
+            <div class="events-list" id="eventsList">
+                <!-- Events will be populated by JavaScript -->
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading real-time events...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Controls -->
+        <div class="dashboard-controls">
+            <div class="control-buttons">
+                <button class="btn btn-primary" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+                <button class="btn btn-secondary" id="exportBtn">
+                    <i class="fas fa-download"></i> Export Report
+                </button>
+                <button class="btn btn-secondary" id="viewDetailsBtn">
+                    <i class="fas fa-chart-bar"></i> View Details
+                </button>
+            </div>
+            <div class="last-updated" id="lastUpdated">
+                <i class="fas fa-clock"></i> Last updated: Loading...
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // =============================================
+        // REAL-TIME DASHBOARD CONTROLLER
+        // =============================================
+        class RealTimeDashboard {
+            constructor() {
+                this.apiBaseUrl = 'http://localhost:3002/api';
+                this.isLoading = false;
+                this.autoRefreshInterval = null;
+                this.init();
+            }
+            
+            async init() {
+                await this.loadAllData();
+                this.startAutoRefresh();
+                this.setupEventListeners();
+                
+                console.log('🚀 Real-time dashboard initialized');
+            }
+            
+            async loadAllData() {
+                this.showLoading(true);
+                
+                try {
+                    // Load all data in parallel
+                    const [overviewData, platformsData, eventsData] = await Promise.all([
+                        this.fetchData('/dashboard/overview'),
+                        this.fetchData('/platforms'),
+                        this.fetchData('/realtime/updates')
+                    ]);
+                    
+                    this.updateOverview(overviewData.data);
+                    this.updatePlatforms(platformsData.data);
+                    this.updateEvents(eventsData.data.events);
+                    this.updateTimestamp();
+                    
+                } catch (error) {
+                    console.error('Failed to load data:', error);
+                    this.showError('Gagal memuat data. Periksa koneksi API.');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            async fetchData(endpoint) {
+                const response = await fetch(`${this.apiBaseUrl}${endpoint}`);
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+                return response.json();
+            }
+            
+            updateOverview(data) {
+                // Format currency for Indonesian Rupiah
+                const formatCurrency = (amount) => {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(amount);
+                };
+                
+                // Update metrics
+                document.getElementById('totalSpend').textContent = formatCurrency(data.total_spend);
+                document.getElementById('totalConversions').textContent = data.total_conversions.toLocaleString();
+                document.getElementById('roas').textContent = data.roas + 'x';
+                document.getElementById('ctr').textContent = data.ctr + '%';
+                
+                // Update trend indicators
+                const trendIndicator = document.querySelectorAll('.metric-change')[0];
+                if (data.performance_trend === 'up') {
+                    trendIndicator.className = 'metric-change change-up';
+                    trendIndicator.innerHTML = `<i class="fas fa-arrow-up"></i><span>+${data.trend_percentage}% from last month</span>`;
+                } else {
+                    trendIndicator.className = 'metric-change change-down';
+                    trendIndicator.innerHTML = `<i class="fas fa-arrow-down"></i><span>-${data.trend_percentage}% from last month</span>`;
+                }
+            }
+            
+            updatePlatforms(platforms) {
+                const formatCurrency = (amount) => {
+                    if (amount >= 1000000) {
+                        return 'Rp ' + (amount / 1000000).toFixed(1) + 'jt';
+                    } else if (amount >= 1000) {
+                        return 'Rp ' + (amount / 1000).toFixed(1) + 'k';
+                    }
+                    return 'Rp ' + amount;
+                };
+                
+                platforms.forEach(platform => {
+                    const prefix = platform.id;
+                    
+                    // Update spend with "jt" or "k" format
+                    document.getElementById(`${prefix}Spend`).textContent = 
+                        formatCurrency(platform.spend);
+                    
+                    document.getElementById(`${prefix}Conversions`).textContent = 
+                        platform.conversions.toLocaleString();
+                    
+                    document.getElementById(`${prefix}CTR`).textContent = 
+                        platform.ctr + '%';
+                    
+                    document.getElementById(`${prefix}CPC`).textContent = 
+                        formatCurrency(platform.cpc);
+                    
+                    // Update platform status
+                    const badge = document.querySelector(`.platform-card.${platform.id} .status-badge`);
+                    if (badge) {
+                        badge.textContent = platform.performance === 'good' ? 'Active' : 
+                                          platform.performance === 'warning' ? 'Warning' : 'Poor';
+                        badge.style.background = platform.performance === 'good' ? platform.color :
+                                               platform.performance === 'warning' ? '#f59e0b' : '#ef4444';
+                    }
+                });
+            }
+            
+            updateEvents(events) {
+                const eventsList = document.getElementById('eventsList');
+                eventsList.innerHTML = '';
+                
+                if (events.length === 0) {
+                    eventsList.innerHTML = `
+                        <div class="event-item">
+                            <div class="event-content">
+                                <div class="event-title">No recent events</div>
+                                <div class="event-time">Events will appear here in real-time</div>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                events.forEach(event => {
+                    const eventTypes = {
+                        conversion: { icon: 'fa-bullseye', class: 'event-conversion', label: 'Conversion' },
+                        click: { icon: 'fa-mouse-pointer', class: 'event-click', label: 'Click' },
+                        impression: { icon: 'fa-eye', class: 'event-impression', label: 'Impression' },
+                        spend: { icon: 'fa-money-bill-wave', class: 'event-spend', label: 'Spend' }
+                    };
+                    
+                    const eventType = eventTypes[event.type] || eventTypes.conversion;
+                    
+                    const eventHTML = `
+                        <div class="event-item">
+                            <div class="event-icon ${eventType.class}">
+                                <i class="fas ${eventType.icon}"></i>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">
+                                    ${event.value.toLocaleString()} ${eventType.label} on ${event.platform}
+                                </div>
+                                <div class="event-time">${event.time}</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    eventsList.innerHTML += eventHTML;
+                });
+            }
+            
+            updateTimestamp() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                document.getElementById('lastUpdated').innerHTML = 
+                    `<i class="fas fa-clock"></i> Last updated: ${timeString}`;
+            }
+            
+            startAutoRefresh() {
+                // Clear existing interval
+                if (this.autoRefreshInterval) {
+                    clearInterval(this.autoRefreshInterval);
+                }
+                
+                // Refresh data every 30 seconds
+                this.autoRefreshInterval = setInterval(() => {
+                    this.loadAllData();
+                    console.log('🔄 Auto-refresh triggered');
+                }, 30000); // 30 seconds
+            }
+            
+            setupEventListeners() {
+                // Refresh button
+                document.getElementById('refreshBtn').addEventListener('click', () => {
+                    this.loadAllData();
+                    
+                    // Show loading state on button
+                    const btn = document.getElementById('refreshBtn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                    btn.disabled = true;
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                });
+                
+                // Export button
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.showNotification('📥 Report sedang di-generate...');
+                    setTimeout(() => {
+                        this.showNotification('✅ Report berhasil di-download!');
+                    }, 1500);
+                });
+                
+                // View details button
+                document.getElementById('viewDetailsBtn').addEventListener('click', () => {
+                    window.open('https://jolly-semifreddo-6e2485.netlify.app', '_blank');
+                });
+            }
+            
+            showLoading(show) {
+                this.isLoading = show;
+                
+                if (show) {
+                    document.querySelectorAll('.metric-value').forEach(el => {
+                        el.style.opacity = '0.5';
+                    });
+                } else {
+                    document.querySelectorAll('.metric-value').forEach(el => {
+                        el.style.opacity = '1';
+                    });
+                }
+            }
+            
+            showError(message) {
+                const errorHTML = `
+                    <div style="background: #fee2e2; color: #dc2626; padding: 15px; 
+                                border-radius: 8px; border: 1px solid #fca5a5; 
+                                margin: 20px 0; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                // Add error message to top of dashboard
+                const container = document.querySelector('.demo-container');
+                const existingError = container.querySelector('.error-message');
+                if (existingError) existingError.remove();
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = errorHTML;
+                container.prepend(errorDiv);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+            
+            showNotification(message) {
+                // Remove existing notification
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                
+                // Create new notification
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.innerHTML = `
+                    <div style="position: fixed; top: 20px; right: 20px; background: #10b981; 
+                                color: white; padding: 15px 25px; border-radius: 8px; 
+                                box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1000;
+                                display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                        <i class="fas fa-check-circle"></i>
+                        ${message}
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                // Auto-remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+        
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dashboard = new RealTimeDashboard();
+        });
+    </script>
+</body>
+</html>
