@@ -1,3 +1,10 @@
+// dashboard.js
+const API_BASE = window.location.origin.includes('localhost') 
+    ? 'http://localhost:3002/api' 
+    : '/.netlify/functions/api'; // Untuk Netlify Functions
+
+// ... rest of the code tetap sama, pastikan semua fetch ke:
+// `${API_BASE}/dashboard/overview` bukan `/api/dashboard/overview`
 
         // Data dummy untuk dashboard
         const dashboardData = {

@@ -1,17 +1,14 @@
 {
-  "name": "daesacorp-demo-api",
+  "name": "daesacorp-dashboard",
   "version": "1.0.0",
-  "description": "Mock API for real-time advertising dashboard",
-  "main": "server.js",
+  "main": "server-final.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node server-final.js",
+    "build": "echo 'No build needed'"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "cors": "^2.8.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+    "serverless-http": "^3.2.0"
   }
 }
