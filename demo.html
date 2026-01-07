@@ -740,9 +740,7 @@
         // =============================================
         class RealTimeDashboard {
             constructor() {
-                this.apiBaseUrl = window.location.origin.includes('localhost') 
-                    ? 'http://localhost:3002/api' 
-                    : '/.netlify/functions/api';
+                this.apiBaseUrl = '/api'; // Netlify akan redirect ke functions
                 this.isLoading = false;
                 this.autoRefreshInterval = null;
                 this.currentCurrency = 'IDR';
