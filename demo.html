@@ -1,26 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
-<!-- Di HEAD section -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- Tambahkan ini di dalam <header>, setelah last-update -->
-<div class="currency-switcher">
-  <select id="currencySelect">
-    <option value="IDR">🇮🇩 IDR</option>
-    <option value="USD">🇺🇸 USD</option>
-    <option value="EUR">🇪🇺 EUR</option>
-    <option value="SGD">🇸🇬 SGD</option>
-  </select>
-</div>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo Dashboard Real-time - DaeSaCorp</title>
+    
+    <!-- CSS Libraries -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         /* Additional styles for real-time dashboard */
         :root {
@@ -34,12 +26,14 @@
             --tiktok: #000000;
         }
         
+        /* Main Container */
         .demo-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
         
+        /* Dashboard Header */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -65,6 +59,7 @@
             align-items: center;
         }
         
+        /* Status Indicators */
         .status-badge {
             background: #10b981;
             color: white;
@@ -93,6 +88,16 @@
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
+        }
+        
+        /* Currency Switcher */
+        .currency-switcher select {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
         }
         
         /* Overview Metrics */
@@ -150,13 +155,8 @@
             font-weight: 500;
         }
         
-        .change-up {
-            color: var(--success);
-        }
-        
-        .change-down {
-            color: var(--danger);
-        }
+        .change-up { color: var(--success); }
+        .change-down { color: var(--danger); }
         
         /* Platform Performance */
         .platforms-grid {
@@ -175,17 +175,9 @@
             border-left: 4px solid var(--primary);
         }
         
-        .platform-card.facebook {
-            border-left-color: var(--facebook);
-        }
-        
-        .platform-card.google {
-            border-left-color: var(--google);
-        }
-        
-        .platform-card.tiktok {
-            border-left-color: var(--tiktok);
-        }
+        .platform-card.facebook { border-left-color: var(--facebook); }
+        .platform-card.google { border-left-color: var(--google); }
+        .platform-card.tiktok { border-left-color: var(--tiktok); }
         
         .platform-header {
             display: flex;
@@ -226,6 +218,65 @@
             color: #6b7280;
         }
         
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .chart-container h2 {
+            margin: 0 0 20px 0;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Export Section */
+        .export-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 40px;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
         /* Real-time Events */
         .realtime-events {
             background: white;
@@ -248,9 +299,7 @@
             border-bottom: 1px solid #f3f4f6;
         }
         
-        .event-item:last-child {
-            border-bottom: none;
-        }
+        .event-item:last-child { border-bottom: none; }
         
         .event-icon {
             width: 40px;
@@ -268,9 +317,7 @@
         .event-impression { background: var(--secondary); }
         .event-spend { background: var(--warning); }
         
-        .event-content {
-            flex: 1;
-        }
+        .event-content { flex: 1; }
         
         .event-title {
             font-weight: 500;
@@ -282,7 +329,7 @@
             color: #6b7280;
         }
         
-        /* Controls */
+        /* Dashboard Controls */
         .dashboard-controls {
             display: flex;
             justify-content: space-between;
@@ -328,9 +375,7 @@
             border: 1px solid #d1d5db;
         }
         
-        .btn-secondary:hover {
-            background: #e5e7eb;
-        }
+        .btn-secondary:hover { background: #e5e7eb; }
         
         .last-updated {
             color: #6b7280;
@@ -357,19 +402,65 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Settings Gear Icon */
+        .simple-settings {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            z-index: 999;
+            transition: transform 0.3s;
+        }
+        
+        .simple-settings:hover {
+            transform: scale(1.1);
+            background: #2980b9;
+        }
+        
+        /* Notifications */
+        #simpleNotifications {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100px); opacity: 0; }
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
-            .overview-metrics {
-                grid-template-columns: 1fr;
-            }
-            
-            .platforms-grid {
+            .overview-metrics,
+            .platforms-grid,
+            .charts-section {
                 grid-template-columns: 1fr;
             }
             
             .dashboard-header {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+            
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
             }
             
             .dashboard-controls {
@@ -384,6 +475,10 @@
             .btn {
                 flex: 1;
                 justify-content: center;
+            }
+            
+            .export-options {
+                flex-direction: column;
             }
         }
     </style>
@@ -411,6 +506,16 @@
                 <p>Live monitoring of advertising performance across all platforms</p>
             </div>
             <div class="header-right">
+                <!-- Currency Switcher -->
+                <div class="currency-switcher">
+                    <select id="currencySelect">
+                        <option value="IDR">🇮🇩 IDR</option>
+                        <option value="USD">🇺🇸 USD</option>
+                        <option value="EUR">🇪🇺 EUR</option>
+                        <option value="SGD">🇸🇬 SGD</option>
+                    </select>
+                </div>
+                
                 <span class="status-badge">
                     <i class="fas fa-circle"></i> LIVE
                 </span>
@@ -421,33 +526,31 @@
             </div>
         </div>
 
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <h2><i class="fas fa-chart-line"></i> Revenue Trend (7 Days)</h2>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h2><i class="fas fa-chart-bar"></i> Platform Performance</h2>
+                <canvas id="platformChart"></canvas>
+            </div>
+        </div>
 
-<!-- Tambahkan setelah .main-content, sebelum footer -->
-<div class="charts-section">
-  <div class="chart-container">
-    <h2><i class="fas fa-chart-line"></i> Revenue Trend (7 Days)</h2>
-    <canvas id="revenueChart"></canvas>
-  </div>
-  
-  <div class="chart-container">
-    <h2><i class="fas fa-chart-bar"></i> Platform Performance</h2>
-    <canvas id="platformChart"></canvas>
-  </div>
-</div>
-
-<!-- Export section -->
-<div class="export-section">
-  <h2><i class="fas fa-download"></i> Export Data</h2>
-  <div class="export-options">
-    <button class="export-btn" id="exportJson">
-      <i class="fas fa-file-code"></i> Download JSON Report
-    </button>
-    <button class="export-btn" id="exportSummary">
-      <i class="fas fa-file-pdf"></i> Generate PDF Summary
-    </button>
-  </div>
-</div>
-
+        <!-- Export Section -->
+        <div class="export-section">
+            <h2><i class="fas fa-download"></i> Export Data</h2>
+            <div class="export-options">
+                <button class="export-btn" id="exportJson">
+                    <i class="fas fa-file-code"></i> Download JSON Report
+                </button>
+                <button class="export-btn" id="exportSummary">
+                    <i class="fas fa-file-pdf"></i> Generate PDF Summary
+                </button>
+            </div>
+        </div>
 
         <!-- Overview Metrics -->
         <div class="overview-metrics" id="overviewMetrics">
@@ -624,6 +727,12 @@
         </div>
     </div>
 
+    <!-- Settings Gear Icon -->
+    <div class="simple-settings" id="simpleSettings">⚙️</div>
+    
+    <!-- Notifications Container -->
+    <div id="simpleNotifications"></div>
+
     <!-- JavaScript -->
     <script>
         // =============================================
@@ -631,18 +740,89 @@
         // =============================================
         class RealTimeDashboard {
             constructor() {
-                this.apiBaseUrl = 'http://localhost:3002/api';
+                this.apiBaseUrl = window.location.origin.includes('localhost') 
+                    ? 'http://localhost:3002/api' 
+                    : '/.netlify/functions/api';
                 this.isLoading = false;
                 this.autoRefreshInterval = null;
+                this.currentCurrency = 'IDR';
+                this.exchangeRates = { IDR: 1, USD: 15500, EUR: 16800, SGD: 11500 };
+                this.charts = {};
                 this.init();
             }
             
             async init() {
+                // Initialize components
+                this.initializeCharts();
+                this.setupEventListeners();
+                this.setupSettings();
+                
+                // Load initial data
                 await this.loadAllData();
                 this.startAutoRefresh();
-                this.setupEventListeners();
                 
                 console.log('🚀 Real-time dashboard initialized');
+            }
+            
+            // Initialize Chart.js charts
+            initializeCharts() {
+                // Revenue Chart
+                const revenueCtx = document.getElementById('revenueChart');
+                if (revenueCtx) {
+                    this.charts.revenue = new Chart(revenueCtx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            datasets: [{
+                                label: 'Revenue',
+                                data: [45000000, 52000000, 48000000, 51000000, 55000000, 60000000, 58000000],
+                                borderColor: '#4361ee',
+                                backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: {
+                                    ticks: {
+                                        callback: (value) => this.formatCurrency(value, this.currentCurrency)
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // Platform Chart
+                const platformCtx = document.getElementById('platformChart');
+                if (platformCtx) {
+                    this.charts.platform = new Chart(platformCtx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Facebook', 'Google', 'TikTok', 'Instagram'],
+                            datasets: [{
+                                label: 'Revenue',
+                                data: [45000000, 38000000, 42000000, 28000000],
+                                backgroundColor: ['#1877f2', '#34a853', '#000000', '#e4405f']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: {
+                                    ticks: {
+                                        callback: (value) => this.formatCurrency(value, this.currentCurrency)
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
             
             async loadAllData() {
@@ -656,9 +836,9 @@
                         this.fetchData('/realtime/updates')
                     ]);
                     
-                    this.updateOverview(overviewData.data);
-                    this.updatePlatforms(platformsData.data);
-                    this.updateEvents(eventsData.data.events);
+                    this.updateOverview(overviewData);
+                    this.updatePlatforms(platformsData);
+                    this.updateEvents(eventsData?.events || []);
                     this.updateTimestamp();
                     
                 } catch (error) {
@@ -675,76 +855,82 @@
                 return response.json();
             }
             
+            // Format currency based on selected currency
+            formatCurrency(amount, currency = this.currentCurrency) {
+                let convertedAmount = amount;
+                
+                if (currency !== 'IDR' && this.exchangeRates[currency]) {
+                    convertedAmount = amount / this.exchangeRates[currency];
+                }
+                
+                const formatter = new Intl.NumberFormat(currency === 'IDR' ? 'id-ID' : 'en-US', {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: currency === 'IDR' ? 0 : 2,
+                    maximumFractionDigits: currency === 'IDR' ? 0 : 2
+                });
+                
+                return formatter.format(convertedAmount);
+            }
+            
             updateOverview(data) {
-                // Format currency for Indonesian Rupiah
-                const formatCurrency = (amount) => {
-                    return new Intl.NumberFormat('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR',
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0
-                    }).format(amount);
-                };
+                if (!data) return;
                 
-                // Update metrics
-                document.getElementById('totalSpend').textContent = formatCurrency(data.total_spend);
-                document.getElementById('totalConversions').textContent = data.total_conversions.toLocaleString();
-                document.getElementById('roas').textContent = data.roas + 'x';
-                document.getElementById('ctr').textContent = data.ctr + '%';
-                
-                // Update trend indicators
-                const trendIndicator = document.querySelectorAll('.metric-change')[0];
-                if (data.performance_trend === 'up') {
-                    trendIndicator.className = 'metric-change change-up';
-                    trendIndicator.innerHTML = `<i class="fas fa-arrow-up"></i><span>+${data.trend_percentage}% from last month</span>`;
-                } else {
-                    trendIndicator.className = 'metric-change change-down';
-                    trendIndicator.innerHTML = `<i class="fas fa-arrow-down"></i><span>-${data.trend_percentage}% from last month</span>`;
+                // Update metrics with formatted currency
+                if (data.total_spend !== undefined) {
+                    document.getElementById('totalSpend').textContent = this.formatCurrency(data.total_spend);
+                }
+                if (data.total_conversions !== undefined) {
+                    document.getElementById('totalConversions').textContent = data.total_conversions.toLocaleString();
+                }
+                if (data.roas !== undefined) {
+                    document.getElementById('roas').textContent = data.roas + 'x';
+                }
+                if (data.ctr !== undefined) {
+                    document.getElementById('ctr').textContent = data.ctr + '%';
                 }
             }
             
             updatePlatforms(platforms) {
-                const formatCurrency = (amount) => {
-                    if (amount >= 1000000) {
-                        return 'Rp ' + (amount / 1000000).toFixed(1) + 'jt';
-                    } else if (amount >= 1000) {
-                        return 'Rp ' + (amount / 1000).toFixed(1) + 'k';
-                    }
-                    return 'Rp ' + amount;
-                };
+                if (!Array.isArray(platforms)) return;
                 
                 platforms.forEach(platform => {
-                    const prefix = platform.id;
+                    const prefix = platform.id || platform.name?.toLowerCase();
+                    if (!prefix) return;
                     
-                    // Update spend with "jt" or "k" format
-                    document.getElementById(`${prefix}Spend`).textContent = 
-                        formatCurrency(platform.spend);
+                    // Update spend
+                    const spendEl = document.getElementById(`${prefix}Spend`);
+                    if (spendEl && platform.spend !== undefined) {
+                        spendEl.textContent = this.formatCurrency(platform.spend);
+                    }
                     
-                    document.getElementById(`${prefix}Conversions`).textContent = 
-                        platform.conversions.toLocaleString();
+                    // Update conversions
+                    const convEl = document.getElementById(`${prefix}Conversions`);
+                    if (convEl && platform.conversions !== undefined) {
+                        convEl.textContent = platform.conversions.toLocaleString();
+                    }
                     
-                    document.getElementById(`${prefix}CTR`).textContent = 
-                        platform.ctr + '%';
+                    // Update CTR
+                    const ctrEl = document.getElementById(`${prefix}CTR`);
+                    if (ctrEl && platform.ctr !== undefined) {
+                        ctrEl.textContent = platform.ctr + '%';
+                    }
                     
-                    document.getElementById(`${prefix}CPC`).textContent = 
-                        formatCurrency(platform.cpc);
-                    
-                    // Update platform status
-                    const badge = document.querySelector(`.platform-card.${platform.id} .status-badge`);
-                    if (badge) {
-                        badge.textContent = platform.performance === 'good' ? 'Active' : 
-                                          platform.performance === 'warning' ? 'Warning' : 'Poor';
-                        badge.style.background = platform.performance === 'good' ? platform.color :
-                                               platform.performance === 'warning' ? '#f59e0b' : '#ef4444';
+                    // Update CPC
+                    const cpcEl = document.getElementById(`${prefix}CPC`);
+                    if (cpcEl && platform.cpc !== undefined) {
+                        cpcEl.textContent = this.formatCurrency(platform.cpc);
                     }
                 });
             }
             
             updateEvents(events) {
                 const eventsList = document.getElementById('eventsList');
+                if (!eventsList) return;
+                
                 eventsList.innerHTML = '';
                 
-                if (events.length === 0) {
+                if (!Array.isArray(events) || events.length === 0) {
                     eventsList.innerHTML = `
                         <div class="event-item">
                             <div class="event-content">
@@ -773,9 +959,9 @@
                             </div>
                             <div class="event-content">
                                 <div class="event-title">
-                                    ${event.value.toLocaleString()} ${eventType.label} on ${event.platform}
+                                    ${event.value?.toLocaleString() || '0'} ${eventType.label} on ${event.platform || 'Unknown'}
                                 </div>
-                                <div class="event-time">${event.time}</div>
+                                <div class="event-time">${event.time || new Date().toLocaleTimeString()}</div>
                             </div>
                         </div>
                     `;
@@ -791,8 +977,10 @@
                     minute: '2-digit',
                     second: '2-digit'
                 });
-                document.getElementById('lastUpdated').innerHTML = 
-                    `<i class="fas fa-clock"></i> Last updated: ${timeString}`;
+                const lastUpdatedEl = document.getElementById('lastUpdated');
+                if (lastUpdatedEl) {
+                    lastUpdatedEl.innerHTML = `<i class="fas fa-clock"></i> Last updated: ${timeString}`;
+                }
             }
             
             startAutoRefresh() {
@@ -801,42 +989,334 @@
                     clearInterval(this.autoRefreshInterval);
                 }
                 
-                // Refresh data every 30 seconds
+                // Load saved refresh interval
+                const saved = localStorage.getItem('daesacorp_preferences');
+                let interval = 30000; // default 30 seconds
+                
+                if (saved) {
+                    try {
+                        const prefs = JSON.parse(saved);
+                        if (prefs.refreshInterval) {
+                            interval = prefs.refreshInterval;
+                        }
+                    } catch(e) {}
+                }
+                
+                // Refresh data at specified interval
                 this.autoRefreshInterval = setInterval(() => {
                     this.loadAllData();
                     console.log('🔄 Auto-refresh triggered');
-                }, 30000); // 30 seconds
+                }, interval);
             }
             
             setupEventListeners() {
                 // Refresh button
-                document.getElementById('refreshBtn').addEventListener('click', () => {
-                    this.loadAllData();
-                    
-                    // Show loading state on button
-                    const btn = document.getElementById('refreshBtn');
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
-                    btn.disabled = true;
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    }, 2000);
-                });
+                const refreshBtn = document.getElementById('refreshBtn');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', () => {
+                        this.loadAllData();
+                        
+                        // Show loading state on button
+                        const originalText = refreshBtn.innerHTML;
+                        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                        refreshBtn.disabled = true;
+                        
+                        setTimeout(() => {
+                            refreshBtn.innerHTML = originalText;
+                            refreshBtn.disabled = false;
+                        }, 2000);
+                    });
+                }
                 
-                // Export button
-                document.getElementById('exportBtn').addEventListener('click', () => {
-                    this.showNotification('📥 Report sedang di-generate...');
-                    setTimeout(() => {
-                        this.showNotification('✅ Report berhasil di-download!');
-                    }, 1500);
-                });
+                // Export buttons
+                const exportJsonBtn = document.getElementById('exportJson');
+                if (exportJsonBtn) {
+                    exportJsonBtn.addEventListener('click', () => this.exportJsonReport());
+                }
+                
+                const exportSummaryBtn = document.getElementById('exportSummary');
+                if (exportSummaryBtn) {
+                    exportSummaryBtn.addEventListener('click', () => this.exportPdfSummary());
+                }
+                
+                const exportBtn = document.getElementById('exportBtn');
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', () => {
+                        this.showNotification('📥 Report sedang di-generate...');
+                        setTimeout(() => {
+                            this.showNotification('✅ Report berhasil di-download!');
+                        }, 1500);
+                    });
+                }
                 
                 // View details button
-                document.getElementById('viewDetailsBtn').addEventListener('click', () => {
-                    window.open('https://jolly-semifreddo-6e2485.netlify.app', '_blank');
+                const viewDetailsBtn = document.getElementById('viewDetailsBtn');
+                if (viewDetailsBtn) {
+                    viewDetailsBtn.addEventListener('click', () => {
+                        window.open('https://jolly-semifreddo-6e2485.netlify.app', '_blank');
+                    });
+                }
+                
+                // Currency switcher
+                const currencySelect = document.getElementById('currencySelect');
+                if (currencySelect) {
+                    currencySelect.addEventListener('change', (e) => {
+                        this.currentCurrency = e.target.value;
+                        this.loadAllData(); // Reload data with new currency
+                        this.showSimpleMsg(`Currency changed to ${this.currentCurrency}`, 'success');
+                    });
+                }
+            }
+            
+            setupSettings() {
+                const settingsBtn = document.getElementById('simpleSettings');
+                if (!settingsBtn) return;
+                
+                settingsBtn.addEventListener('click', () => {
+                    this.showSettingsPanel();
                 });
+            }
+            
+            async exportJsonReport() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/export/json`);
+                    if (!response.ok) throw new Error('Export failed');
+                    
+                    const data = await response.json();
+                    
+                    // Create downloadable file
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { 
+                        type: 'application/json' 
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    
+                    // Set filename with current date
+                    const dateStr = new Date().toISOString().split('T')[0];
+                    a.href = url;
+                    a.download = `daesacorp-dashboard-${dateStr}.json`;
+                    
+                    // Trigger download
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    // Cleanup
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Show success notification
+                    this.showNotification('✅ Report downloaded successfully!');
+                    
+                } catch (err) {
+                    console.error('Export error:', err);
+                    this.showNotification('❌ Failed to export report', 'error');
+                }
+            }
+            
+            exportPdfSummary() {
+                this.showNotification('📄 PDF export feature coming soon!', 'info');
+            }
+            
+            showSettingsPanel() {
+                // Check if settings panel already exists
+                const existing = document.querySelector('.settings-overlay');
+                if (existing) {
+                    existing.remove();
+                    return;
+                }
+                
+                // Create overlay
+                const overlay = document.createElement('div');
+                overlay.className = 'settings-overlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                
+                // Load saved settings
+                const saved = localStorage.getItem('daesacorp_preferences');
+                let savedPrefs = {};
+                try {
+                    savedPrefs = saved ? JSON.parse(saved) : {};
+                } catch(e) {}
+                
+                overlay.innerHTML = `
+                    <div style="
+                        background: white;
+                        padding: 25px;
+                        border-radius: 15px;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                        min-width: 350px;
+                        position: relative;
+                        max-width: 90%;
+                        max-height: 90%;
+                        overflow-y: auto;
+                    ">
+                        <!-- Close Button -->
+                        <button class="close-settings" style="
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            background: none;
+                            border: none;
+                            font-size: 20px;
+                            cursor: pointer;
+                            color: #666;
+                            padding: 5px;
+                            border-radius: 50%;
+                            width: 30px;
+                            height: 30px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        " onclick="this.closest('.settings-overlay').remove()">
+                            ✕
+                        </button>
+                        
+                        <h3 style="margin-top: 0; margin-right: 30px; color: #2c3e50;">
+                            ⚙️ Dashboard Settings
+                        </h3>
+                        
+                        <!-- Settings Content -->
+                        <div style="margin: 20px 0;">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">
+                                    🔄 Auto-refresh Interval
+                                </label>
+                                <select id="refreshSelect" style="
+                                    width: 100%;
+                                    padding: 10px;
+                                    border-radius: 8px;
+                                    border: 1px solid #ddd;
+                                    font-size: 14px;
+                                ">
+                                    <option value="10000" ${savedPrefs.refreshInterval === 10000 ? 'selected' : ''}>10 seconds</option>
+                                    <option value="30000" ${(!savedPrefs.refreshInterval || savedPrefs.refreshInterval === 30000) ? 'selected' : ''}>30 seconds</option>
+                                    <option value="60000" ${savedPrefs.refreshInterval === 60000 ? 'selected' : ''}>1 minute</option>
+                                    <option value="300000" ${savedPrefs.refreshInterval === 300000 ? 'selected' : ''}>5 minutes</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">
+                                    🎨 Theme
+                                </label>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <button onclick="window.dashboard.applyTheme('light')" style="
+                                        flex: 1;
+                                        padding: 12px;
+                                        background: #f8f9fa;
+                                        border: 2px solid #ddd;
+                                        border-radius: 8px;
+                                        cursor: pointer;
+                                        min-width: 70px;
+                                    ">
+                                        ☀️ Light
+                                    </button>
+                                    <button onclick="window.dashboard.applyTheme('dark')" style="
+                                        flex: 1;
+                                        padding: 12px;
+                                        background: #2c3e50;
+                                        color: white;
+                                        border: 2px solid #2c3e50;
+                                        border-radius: 8px;
+                                        cursor: pointer;
+                                        min-width: 70px;
+                                    ">
+                                        🌙 Dark
+                                    </button>
+                                    <button onclick="window.dashboard.applyTheme('blue')" style="
+                                        flex: 1;
+                                        padding: 12px;
+                                        background: #3498db;
+                                        color: white;
+                                        border: 2px solid #3498db;
+                                        border-radius: 8px;
+                                        cursor: pointer;
+                                        min-width: 70px;
+                                    ">
+                                        🔵 Blue
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 10px; margin-top: 25px;">
+                            <button onclick="window.dashboard.saveSettings()" style="
+                                flex: 2;
+                                padding: 12px;
+                                background: #2ecc71;
+                                color: white;
+                                border: none;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-weight: 600;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                            ">
+                                💾 Save Settings
+                            </button>
+                            <button onclick="overlay.remove()" style="
+                                flex: 1;
+                                padding: 12px;
+                                background: #95a5a6;
+                                color: white;
+                                border: none;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-weight: 600;
+                            ">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(overlay);
+                
+                // Close when clicking outside
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.remove();
+                    }
+                });
+            }
+            
+            applyTheme(theme) {
+                document.body.className = theme + '-theme';
+                localStorage.setItem('daesacorp_theme', theme);
+                this.showSimpleMsg(`Theme changed to ${theme}`, 'success');
+            }
+            
+            saveSettings() {
+                const refreshInterval = document.querySelector('#refreshSelect')?.value || 30000;
+                
+                const settings = {
+                    refreshInterval: parseInt(refreshInterval),
+                    savedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('daesacorp_preferences', JSON.stringify(settings));
+                
+                // Restart auto-refresh with new interval
+                this.startAutoRefresh();
+                
+                this.showSimpleMsg('Settings saved successfully!', 'success');
+                
+                // Close settings panel
+                const overlay = document.querySelector('.settings-overlay');
+                if (overlay) overlay.remove();
             }
             
             showLoading(show) {
@@ -863,7 +1343,6 @@
                     </div>
                 `;
                 
-                // Add error message to top of dashboard
                 const container = document.querySelector('.demo-container');
                 const existingError = container.querySelector('.error-message');
                 if (existingError) existingError.remove();
@@ -873,37 +1352,55 @@
                 errorDiv.innerHTML = errorHTML;
                 container.prepend(errorDiv);
                 
-                // Auto-remove after 5 seconds
-                setTimeout(() => {
-                    errorDiv.remove();
-                }, 5000);
+                setTimeout(() => errorDiv.remove(), 5000);
             }
             
-            showNotification(message) {
-                // Remove existing notification
-                const existing = document.querySelector('.notification');
-                if (existing) existing.remove();
+            showNotification(message, type = 'success') {
+                this.showSimpleMsg(message, type);
+            }
+            
+            showSimpleMsg(text, type = 'info') {
+                const colors = {
+                    success: '#2ecc71',
+                    error: '#e74c3c',
+                    warning: '#f39c12',
+                    info: '#3498db'
+                };
                 
-                // Create new notification
-                const notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.innerHTML = `
-                    <div style="position: fixed; top: 20px; right: 20px; background: #10b981; 
-                                color: white; padding: 15px 25px; border-radius: 8px; 
-                                box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1000;
-                                display: flex; align-items: center; gap: 10px; font-weight: 500;">
-                        <i class="fas fa-check-circle"></i>
-                        ${message}
-                    </div>
+                const div = document.createElement('div');
+                div.style.cssText = `
+                    background: white;
+                    color: #333;
+                    padding: 12px 16px;
+                    margin-bottom: 10px;
+                    border-radius: 8px;
+                    border-left: 5px solid ${colors[type] || colors.info};
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    animation: slideIn 0.3s ease;
                 `;
-                document.body.appendChild(notification);
                 
-                // Auto-remove after 3 seconds
-                setTimeout(() => {
-                    notification.style.opacity = '0';
-                    notification.style.transition = 'opacity 0.3s ease';
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
+                div.innerHTML = `
+                    <span style="font-size: 18px;">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
+                    <span>${text}</span>
+                `;
+                
+                const container = document.getElementById('simpleNotifications');
+                if (container) {
+                    container.appendChild(div);
+                    
+                    // Auto remove after 5 seconds
+                    setTimeout(() => {
+                        div.style.animation = 'slideOut 0.3s ease';
+                        setTimeout(() => {
+                            if (div.parentNode === container) {
+                                container.removeChild(div);
+                            }
+                        }, 300);
+                    }, 5000);
+                }
             }
         }
         
@@ -912,201 +1409,5 @@
             window.dashboard = new RealTimeDashboard();
         });
     </script>
-
-<!-- Include notification system -->
-<script src="notifications.js"></script>
-
-<!-- Include preferences panel -->
-<script>
-    // Simple inline preferences
-    document.addEventListener('DOMContentLoaded', function() {
-        const settingsToggle = document.getElementById('settingsToggle');
-        const preferencesPanel = document.getElementById('preferencesPanel');
-        
-        if (settingsToggle && preferencesPanel) {
-            settingsToggle.addEventListener('click', () => {
-                preferencesPanel.classList.toggle('show');
-            });
-            
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!preferencesPanel.contains(e.target) && 
-                    !settingsToggle.contains(e.target)) {
-                    preferencesPanel.classList.remove('show');
-                }
-            });
-        }
-    });
-</script>
-
-
-<!-- SIMPLE SETTINGS BUTTON -->
-<div class="simple-settings" id="simpleSettings">
-    ⚙️
-</div>
-
-<!-- SIMPLE NOTIFICATIONS CONTAINER -->
-<div id="simpleNotifications" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-"></div>
-
-<script>
-// SIMPLE NOTIFICATION FUNCTION
-function showSimpleMsg(text, type = 'info') {
-    const colors = {
-        success: '#2ecc71',
-        error: '#e74c3c',
-        warning: '#f39c12',
-        info: '#3498db'
-    };
-    
-    const div = document.createElement('div');
-    div.style.cssText = `
-        background: white;
-        color: #333;
-        padding: 12px 16px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        border-left: 5px solid ${colors[type] || colors.info};
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        animation: slideIn 0.3s ease;
-    `;
-    
-    div.innerHTML = `
-        <span style="font-size: 18px;">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
-        <span>${text}</span>
-    `;
-    
-    const container = document.getElementById('simpleNotifications');
-    container.appendChild(div);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        div.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => div.remove(), 300);
-    }, 5000);
-}
-
-// SIMPLE SETTINGS
-document.getElementById('simpleSettings').addEventListener('click', function() {
-    const settings = `
-        <div style="
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 10000;
-            min-width: 300px;
-        ">
-            <h3 style="margin-top: 0;">⚙️ Settings</h3>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; font-weight: bold;">
-                    🔄 Auto-refresh
-                </label>
-                <select id="refreshSelect" style="
-                    width: 100%;
-                    padding: 8px;
-                    border-radius: 6px;
-                    border: 1px solid #ddd;
-                ">
-                    <option value="15000">15 detik</option>
-                    <option value="30000" selected>30 detik</option>
-                    <option value="60000">1 menit</option>
-                </select>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; font-weight: bold;">
-                    🎨 Tema
-                </label>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="document.body.style.background='#f5f7fa'" style="
-                        padding: 10px; background: #f5f7fa; border: 2px solid #3498db;
-                        border-radius: 6px; cursor: pointer;
-                    ">Terang</button>
-                    <button onclick="document.body.style.background='#2c3e50'; document.body.style.color='white'" style="
-                        padding: 10px; background: #2c3e50; color: white;
-                        border-radius: 6px; cursor: pointer;
-                    ">Gelap</button>
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button onclick="showSimpleMsg('Settings disimpan!', 'success'); this.closest('div').remove()" style="
-                    flex: 1; padding: 10px; background: #3498db;
-                    color: white; border: none; border-radius: 6px;
-                    cursor: pointer; font-weight: bold;
-                ">
-                    💾 Simpan
-                </button>
-                <button onclick="this.closest('div').remove()" style="
-                    flex: 1; padding: 10px; background: #e74c3c;
-                    color: white; border: none; border-radius: 6px;
-                    cursor: pointer; font-weight: bold;
-                ">
-                    ❌ Tutup
-                </button>
-            </div>
-        </div>
-    `;
-    
-    // Remove existing settings if any
-    const existing = document.querySelector('[style*="position: fixed; top: 50%"]');
-    if (existing) existing.remove();
-    
-    document.body.insertAdjacentHTML('beforeend', settings);
-});
-
-// Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100px); opacity: 0; }
-    }
-    
-    .simple-settings {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #3498db;
-        color: white;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-        z-index: 999;
-        transition: transform 0.3s;
-    }
-    
-    .simple-settings:hover {
-        transform: scale(1.1);
-        background: #2980b9;
-    }
-`;
-document.head.appendChild(style);
-</script>
-
-
 </body>
 </html>
