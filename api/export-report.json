@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "reportId": "DASH-20240106-001",
+    "generatedAt": "2024-01-06T12:30:00.000Z",
+    "period": "Last 7 Days",
+    "currency": "IDR",
+    "timezone": "Asia/Jakarta",
+    "version": "1.0.0"
+  },
+  "summary": {
+    "totalSpend": 12500000,
+    "totalConversions": 1248,
+    "totalRevenue": 50000000,
+    "averageROAS": 4.2,
+    "averageCTR": 3.8,
+    "averageCPC": 2150,
+    "totalImpressions": 1250000,
+    "totalClicks": 47500,
+    "conversionRate": 2.63,
+    "topPerformingPlatform": "Facebook",
+    "mostImprovedPlatform": "TikTok",
+    "overallPerformance": "Excellent"
+  },
+  "platforms": [
+    {
+      "name": "Facebook & Instagram",
+      "spend": 7500000,
+      "revenue": 32500000,
+      "conversions": 685,
+      "ctr": 2.5,
+      "cpc": 2400,
+      "roas": 4.33,
+      "impressions": 500000,
+      "clicks": 12500,
+      "performance": "Excellent",
+      "recommendations": [
+        "Increase budget by 15% for top-performing ads",
+        "Test new audience segments",
+        "Optimize for video content"
+      ]
+    },
+    {
+      "name": "Google Ads",
+      "spend": 5000000,
+      "revenue": 19000000,
+      "conversions": 563,
+      "ctr": 2.25,
+      "cpc": 1850,
+      "roas": 3.8,
+      "impressions": 450000,
+      "clicks": 10125,
+      "performance": "Good",
+      "recommendations": [
+        "Optimize keyword bidding strategy",
+        "Test responsive search ads",
+        "Increase remarketing budget"
+      ]
+    },
+    {
+      "name": "TikTok Ads",
+      "spend": 2500000,
+      "revenue": 12500000,
+      "conversions": 250,
+      "ctr": 2.5,
+      "cpc": 2000,
+      "roas": 5.0,
+      "impressions": 300000,
+      "clicks": 7500,
+      "performance": "Excellent",
+      "recommendations": [
+        "Expand to new demographic (25-34)",
+        "Test influencer collaborations",
+        "Increase video ad budget"
+      ]
+    }
+  ],
+  "trends": {
+    "weeklySpend": [10500000, 11200000, 11800000, 12500000, 12100000, 12800000, 12500000],
+    "weeklyConversions": [1100, 1150, 1200, 1248, 1220, 1260, 1248],
+    "weeklyRevenue": [42000000, 44500000, 47000000, 50000000, 48500000, 51000000, 50000000],
+    "dailyAverageCTR": [3.5, 3.6, 3.7, 3.8, 3.75, 3.85, 3.8],
+    "dailyAverageCPC": [2200, 2180, 2160, 2150, 2160, 2140, 2150]
+  },
+  "topCampaigns": [
+    {
+      "name": "Q4 Holiday Sale",
+      "platform": "Facebook",
+      "spend": 2000000,
+      "conversions": 185,
+      "roas": 4.8,
+      "status": "Completed",
+      "period": "Nov 15 - Dec 31, 2023"
+    },
+    {
+      "name": "Product Launch 2024",
+      "platform": "Google",
+      "spend": 1500000,
+      "conversions": 120,
+      "roas": 4.2,
+      "status": "Active",
+      "period": "Dec 1, 2023 - Jan 31, 2024"
+    },
+    {
+      "name": "Brand Awareness TikTok",
+      "platform": "TikTok",
+      "spend": 1000000,
+      "conversions": 85,
+      "roas": 5.5,
+      "status": "Active",
+      "period": "Dec 10, 2023 - Feb 10, 2024"
+    }
+  ],
+  "audienceInsights": {
+    "topAgeGroup": "25-34",
+    "topGender": "Female (58%)",
+    "topLocation": "Jakarta",
+    "topInterests": ["E-commerce", "Technology", "Fashion"],
+    "deviceBreakdown": {
+      "mobile": 65,
+      "desktop": 25,
+      "tablet": 10
+    }
+  },
+  "financialSummary": {
+    "totalInvestment": 12500000,
+    "totalReturn": 50000000,
+    "netProfit": 37500000,
+    "roi": 300,
+    "costPerAcquisition": 10016,
+    "averageOrderValue": 40064,
+    "lifetimeValue": 120192
+  },
+  "keyRecommendations": [
+    {
+      "priority": "High",
+      "action": "Increase TikTok budget allocation by 25%",
+      "reason": "Highest ROAS (5.0x) among all platforms",
+      "expectedImpact": "+15% overall revenue"
+    },
+    {
+      "priority": "Medium",
+      "action": "Optimize Google Ads keyword strategy",
+      "reason": "Lower CTR compared to benchmarks",
+      "expectedImpact": "+8% conversion rate"
+    },
+    {
+      "priority": "Low",
+      "action": "Test Instagram Reels ads",
+      "reason": "Untapped potential in video content",
+      "expectedImpact": "New revenue stream"
+    }
+  ],
+  "nextQuarterGoals": {
+    "targetSpend": 15000000,
+    "targetRevenue": 65000000,
+    "targetConversions": 1500,
+    "targetROAS": 4.5,
+    "targetCTR": 4.0,
+    "kpis": [
+      "Increase monthly active campaigns to 15",
+      "Reduce average CPA by 10%",
+      "Increase mobile conversion rate by 15%"
+    ]
+  },
+  "reportNotes": [
+    "Data period: Last 7 days (Dec 30, 2023 - Jan 5, 2024)",
+    "All currency values in Indonesian Rupiah (IDR)",
+    "Performance metrics calculated based on platform-reported data",
+    "Recommendations based on historical performance and industry benchmarks"
+  ]
+}

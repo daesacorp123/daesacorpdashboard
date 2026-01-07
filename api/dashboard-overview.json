@@ -1,0 +1,13 @@
+// api/dashboard-overview.json
+{
+  "success": true,
+  "data": {
+    "total_spend": 12500000,
+    "total_conversions": 1248,
+    "roas": "4.2",
+    "ctr": "3.8%",
+    "performance_trend": "up",
+    "trend_percentage": "12.5",
+    "timestamp": "2024-01-06T12:00:00.000Z"
+  }
+}

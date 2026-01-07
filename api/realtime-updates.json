@@ -1,0 +1,23 @@
+// api/realtime-updates.json
+{
+  "events": [
+    {
+      "type": "conversion",
+      "value": 150,
+      "platform": "Facebook",
+      "time": "2 minutes ago"
+    },
+    {
+      "type": "click",
+      "value": 1200,
+      "platform": "Google", 
+      "time": "5 minutes ago"
+    },
+    {
+      "type": "impression",
+      "value": 50000,
+      "platform": "TikTok",
+      "time": "10 minutes ago"
+    }
+  ]
+}

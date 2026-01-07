@@ -1,0 +1,33 @@
+// api/platforms.json  
+[
+  {
+    "id": "fb",
+    "name": "Facebook",
+    "spend": 7500000,
+    "conversions": 685,
+    "ctr": "2.5%",
+    "cpc": 2400,
+    "performance": "good",
+    "color": "#1877f2"
+  },
+  {
+    "id": "google",
+    "name": "Google",
+    "spend": 5000000,
+    "conversions": 563,
+    "ctr": "2.25%",
+    "cpc": 1850,
+    "performance": "good",
+    "color": "#34a853"
+  },
+  {
+    "id": "tiktok",
+    "name": "TikTok",
+    "spend": 2500000,
+    "conversions": 250,
+    "ctr": "2.5%",
+    "cpc": 2000,
+    "performance": "testing",
+    "color": "#000000"
+  }
+]
