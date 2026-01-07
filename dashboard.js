@@ -1,380 +1,637 @@
-// dashboard.js
+// ==================== dashboard.js FINAL VERSION ====================
+
+// ==================== USER PREFERENCES ====================
+let userPreferences = {
+    refreshInterval: 30000,
+    theme: 'light',
+    currency: 'IDR',
+    alertsEnabled: true
+};
+
+// Load preferences from localStorage
+function loadPreferences() {
+    const saved = localStorage.getItem('daesacorp_preferences');
+    if (saved) {
+        userPreferences = { ...userPreferences, ...JSON.parse(saved) };
+        
+        // Apply preferences
+        currentCurrency = userPreferences.currency;
+        document.getElementById('currencySelect').value = currentCurrency;
+        applyTheme(userPreferences.theme);
+    }
+}
+
+// Save preferences to localStorage
+function savePreferences() {
+    localStorage.setItem('daesacorp_preferences', JSON.stringify(userPreferences));
+}
+
+// Apply theme
+function applyTheme(theme) {
+    document.body.className = theme + '-theme';
+}
+
+// ==================== UPDATE MAIN FUNCTION ====================
+async function updateDashboard() {
+    console.log(`Updating dashboard with ${currentCurrency} currency...`);
+    
+    try {
+        // Update exchange rates first
+        await updateCurrencyRates();
+        
+        // Update all components
+        await Promise.all([
+            updateOverviewCards(),
+            updateRealtimeEvents(),
+            updatePlatformStatus(),
+            updateCharts()
+        ]);
+        
+        // Update currency display
+        updateCurrencyDisplay();
+        
+        // Check for alerts if notifications system is available
+        if (window.NotificationSystem && userPreferences.alertsEnabled) {
+            const dashboardData = {
+                revenueChange: Math.random() * 40 - 20, // Simulate -20% to +20% change
+                conversionRate: 3.2 + (Math.random() * 2 - 1),
+                platformStatus: Math.random() > 0.7 ? 'Poor' : 'Good'
+            };
+            window.NotificationSystem.checkAlerts(dashboardData);
+        }
+        
+        console.log('Dashboard update complete');
+        
+    } catch (err) {
+        console.error('Dashboard update error:', err);
+        if (window.NotificationSystem) {
+            window.NotificationSystem.showNotification('Failed to update dashboard data', 'error');
+        }
+    }
+}
+
+
+// Enhanced Dashboard dengan Charts, Multi-Currency, dan Export Features
+
+// Global variables
 const API_BASE = window.location.origin.includes('localhost') 
     ? 'http://localhost:3002/api' 
-    : '/.netlify/functions/api'; // Untuk Netlify Functions
+    : '/.netlify/functions/api';
 
-// ... rest of the code tetap sama, pastikan semua fetch ke:
-// `${API_BASE}/dashboard/overview` bukan `/api/dashboard/overview`
+let currentCurrency = 'IDR';
+let exchangeRates = { 
+    IDR: 1, 
+    USD: 15500,   // 1 USD = 15,500 IDR
+    EUR: 16800,   // 1 EUR = 16,800 IDR
+    SGD: 11500    // 1 SGD = 11,500 IDR
+};
 
-        // Data dummy untuk dashboard
-        const dashboardData = {
-            website: {
-                status: "active",
-                visitors: 1245,
-                conversion: 3.17,
-                uptime: "99.8%"
+// Chart instances
+let revenueChart = null;
+let platformChart = null;
+
+// ==================== UTILITY FUNCTIONS ====================
+
+/**
+ * Format currency berdasarkan mata uang yang dipilih
+ */
+function formatCurrency(amount, currency = currentCurrency) {
+    // Handle invalid amount
+    if (typeof amount !== 'number' || isNaN(amount)) {
+        amount = 0;
+    }
+    
+    let convertedAmount = amount;
+    
+    // Convert jika bukan IDR
+    if (currency !== 'IDR' && exchangeRates[currency]) {
+        convertedAmount = amount / exchangeRates[currency];
+    }
+    
+    // Format berdasarkan currency
+    const formatter = new Intl.NumberFormat(currency === 'IDR' ? 'id-ID' : 'en-US', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: currency === 'IDR' ? 0 : 2,
+        maximumFractionDigits: currency === 'IDR' ? 0 : 2
+    });
+    
+    return formatter.format(convertedAmount);
+}
+
+/**
+ * Format angka dengan separator ribuan
+ */
+function formatNumber(num) {
+    return new Intl.NumberFormat('id-ID').format(num);
+}
+
+/**
+ * Format persentase
+ */
+function formatPercentage(num) {
+    return num.toFixed(1) + '%';
+}
+
+// ==================== CHART FUNCTIONS ====================
+
+/**
+ * Initialize Chart.js charts
+ */
+function initializeCharts() {
+    // 1. REVENUE TREND CHART (Line Chart)
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+        revenueChart = new Chart(revenueCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [],
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#3498db',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }]
             },
-            googleAds: {
-                status: "active",
-                clicks: 890,
-                impressions: 24500,
-                cost: 1250000,
-                conversions: 45
-            },
-            metaAds: {
-                status: "inactive",
-                reach: 0,
-                engagement: 0,
-                cost: 0,
-                conversions: 0
-            },
-            overall: {
-                performance: "BBR1 - 3.17%",
-                revenue: 28500000,
-                roi: 228
-            }
-        };
-
-        // Format waktu Indonesia
-        function updateWaktuIndonesia() {
-            const now = new Date();
-            const options = { 
-                timeZone: 'Asia/Jakarta',
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            const timeStr = now.toLocaleTimeString('id-ID', options);
-            const liveTimeElement = document.getElementById('liveTime');
-            if (liveTimeElement) {
-                liveTimeElement.textContent = timeStr;
-            }
-        }
-
-        // Inisialisasi Dashboard
-        function initDashboard() {
-            console.log("✅ Dashboard initialized");
-            updateDashboardUI();
-            loadServiceData();
-            setupEventListeners();
-            initNotifications();
-        }
-
-        // Update UI Dashboard
-        function updateDashboardUI() {
-            // Update status toggle
-            const googleToggle = document.getElementById('toggleGoogle');
-            const metaToggle = document.getElementById('toggleMeta');
-            
-            if (googleToggle) {
-                googleToggle.classList.toggle('active', dashboardData.googleAds.status === "active");
-            }
-            if (metaToggle) {
-                metaToggle.classList.toggle('active', dashboardData.metaAds.status === "active");
-            }
-            
-            // Update statistik
-            updateStatsDisplay();
-        }
-
-        // Load data dari API
-        async function loadServiceData() {
-            console.log("📡 Loading service data...");
-            try {
-                // Coba ambil dari API lokal
-                const response = await fetch('/api/dashboard');
-                if (response.ok) {
-                    const data = await response.json();
-                    updateDataFromResponse(data);
-                } else {
-                    throw new Error('API response not OK');
-                }
-            } catch (error) {
-                console.log("⚠️ Using dummy data:", error.message);
-                // Fallback ke data dummy
-                useFallbackData();
-            }
-        }
-
-        // Update data dari response
-        function updateDataFromResponse(response) {
-            if (response.data) {
-                Object.assign(dashboardData.googleAds, response.data.googleAds || {});
-                Object.assign(dashboardData.metaAds, response.data.metaAds || {});
-                Object.assign(dashboardData.website, response.data.website || {});
-                Object.assign(dashboardData.overall, response.data.overall || {});
-            }
-            
-            updateStatsDisplay();
-            
-            // Update timestamp
-            const tanggalElement = document.querySelector('.preview-container p');
-            if (tanggalElement) {
-                const now = new Date();
-                const options = { 
-                    timeZone: 'Asia/Jakarta',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                };
-                tanggalElement.innerHTML = `Dashboard diperbarui: ${now.toLocaleDateString('id-ID', options)}`;
-            }
-            
-            showNotification("✅ Data diperbarui", "success");
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Toggle Google Ads
-            const googleToggle = document.getElementById('toggleGoogle');
-            if (googleToggle) {
-                googleToggle.addEventListener('click', function() {
-                    toggleService('googleAds', this);
-                });
-            }
-            
-            // Toggle Meta Ads
-            const metaToggle = document.getElementById('toggleMeta');
-            if (metaToggle) {
-                metaToggle.addEventListener('click', function() {
-                    toggleService('metaAds', this);
-                });
-            }
-            
-            // Search functionality
-            const searchInput = document.getElementById('dashboardSearch');
-            if (searchInput) {
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        searchDashboard(this.value);
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Revenue: ${formatCurrency(context.raw)}`;
+                            }
+                        }
                     }
-                });
-            }
-            
-            // Auto-refresh setiap 30 detik
-            setInterval(loadServiceData, 30000);
-        }
-
-        // Toggle service
-        async function toggleService(serviceName, toggleElement) {
-            const isActive = dashboardData[serviceName].status === "active";
-            const newStatus = isActive ? "inactive" : "active";
-            
-            if (isActive) {
-                if (!confirm(`Apakah Anda yakin ingin menonaktifkan ${serviceName === 'googleAds' ? 'Google Ads' : 'Meta Ads'}?`)) {
-                    return;
-                }
-            }
-            
-            try {
-                // Coba kirim ke API
-                const response = await fetch('/api/toggle', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
                     },
-                    body: JSON.stringify({
-                        service: serviceName,
-                        status: newStatus
-                    })
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log("✅ API Response:", result);
-                }
-                
-                // Update local data
-                dashboardData[serviceName].status = newStatus;
-                toggleElement.classList.toggle('active');
-                
-                // Reload data
-                loadServiceData();
-                
-                const serviceNameID = serviceName === 'googleAds' ? 'Google Ads' : 'Meta Ads';
-                const status = isActive ? 'dinonaktifkan' : 'diaktifkan';
-                showNotification(`${serviceNameID} berhasil ${status}`, "success");
-                
-            } catch (error) {
-                console.error("❌ Error, using local update:", error);
-                
-                // Fallback: update lokal saja
-                dashboardData[serviceName].status = newStatus;
-                toggleElement.classList.toggle('active');
-                
-                const serviceNameID = serviceName === 'googleAds' ? 'Google Ads' : 'Meta Ads';
-                const status = isActive ? 'dinonaktifkan' : 'diaktifkan';
-                showNotification(`${serviceNameID} ${status} (mode offline)`, "info");
-            }
-        }
-
-        // Fungsi pencarian
-        async function searchDashboard(query) {
-            if (!query.trim()) return;
-            
-            try {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    if (data.success && data.results.length > 0) {
-                        showNotification(`🔍 Ditemukan ${data.count} hasil untuk "${query}"`, "info");
-                        console.log("Hasil pencarian:", data.results);
-                    } else {
-                        showNotification(`❌ Tidak ditemukan hasil untuk "${query}"`, "warning");
+                    x: {
+                        grid: {
+                            display: false
+                        }
                     }
                 }
-            } catch (error) {
-                console.error("❌ Search error:", error);
-                showNotification("🔍 Pencarian (mode offline)", "info");
             }
-        }
-
-        // System notifikasi
-        function initNotifications() {
-            if (!document.getElementById('notification-container')) {
-                const notificationContainer = document.createElement('div');
-                notificationContainer.id = 'notification-container';
-                notificationContainer.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    z-index: 1000;
-                `;
-                document.body.appendChild(notificationContainer);
-            }
-        }
-
-        function showNotification(message, type = "info") {
-            initNotifications();
-            
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
-                <div style="
-                    background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    margin-bottom: 10px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    min-width: 300px;
-                ">
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()" style="
-                        background: none;
-                        border: none;
-                        color: white;
-                        cursor: pointer;
-                        font-size: 18px;
-                    ">×</button>
-                </div>
-            `;
-            
-            document.getElementById('notification-container').appendChild(notification);
-            
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
-            }, 5000);
-        }
-
-        // Fallback data jika API tidak tersedia
-        function useFallbackData() {
-            console.log("⚠️ Using fallback data");
-            const mockResponse = {
-                data: dashboardData,
-                timestamp: new Date().toISOString()
-            };
-            updateDataFromResponse(mockResponse);
-        }
-
-        // Update statistik tambahan
-        function updateAdditionalStats() {
-            let additionalStats = document.querySelector('.additional-stats');
-            if (!additionalStats) {
-                additionalStats = document.createElement('div');
-                additionalStats.className = 'additional-stats';
-                additionalStats.style.cssText = `
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                    gap: 1rem;
-                    margin-top: 2rem;
-                    padding-top: 1rem;
-                    border-top: 1px solid #e5e7eb;
-                `;
-                
-                additionalStats.innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-title">Total Klik</div>
-                        <div class="stat-value" id="totalClicks">${dashboardData.googleAds.clicks}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Impresi</div>
-                        <div class="stat-value" id="totalImpressions">${dashboardData.googleAds.impressions.toLocaleString()}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Biaya</div>
-                        <div class="stat-value" id="totalCost">Rp ${dashboardData.googleAds.cost.toLocaleString()}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">ROI</div>
-                        <div class="stat-value" id="roiValue">${dashboardData.overall.roi}%</div>
-                    </div>
-                `;
-                
-                const previewContainer = document.querySelector('.preview-container');
-                if (previewContainer) {
-                    previewContainer.appendChild(additionalStats);
-                }
-            }
-        }
-
-        // Update tampilan statistik
-        function updateStatsDisplay() {
-            updateAdditionalStats();
-        }
-
-        // Animasi untuk kartu layanan
-        function initServiceCardAnimations() {
-            const observerOptions = {
-                threshold: 0.1
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
+        });
+    }
+    
+    // 2. PLATFORM COMPARISON CHART (Bar Chart)
+    const platformCtx = document.getElementById('platformChart');
+    if (platformCtx) {
+        platformChart = new Chart(platformCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [],
+                    backgroundColor: [
+                        '#3498db',  // Facebook - Blue
+                        '#2ecc71',  // Google - Green
+                        '#e74c3c',  // TikTok - Red
+                        '#f39c12'   // Instagram - Orange
+                    ],
+                    borderWidth: 0,
+                    borderRadius: 5,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Revenue: ${formatCurrency(context.raw)}`;
+                            }
+                        }
                     }
-                });
-            }, observerOptions);
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    console.log('Charts initialized');
+}
 
-            document.querySelectorAll('.service-card').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.5s, transform 0.5s';
-                observer.observe(card);
+/**
+ * Update charts with new data
+ */
+async function updateCharts() {
+    try {
+        // 1. Fetch and update Revenue Trend Chart
+        const historicalRes = await fetch(`${API_BASE}/historical/daily`);
+        if (!historicalRes.ok) throw new Error('Historical data fetch failed');
+        
+        const historicalData = await historicalRes.json();
+        
+        if (revenueChart && Array.isArray(historicalData)) {
+            revenueChart.data.labels = historicalData.map(d => {
+                const date = new Date(d.date);
+                return date.toLocaleDateString('en-US', { weekday: 'short' });
+            });
+            revenueChart.data.datasets[0].data = historicalData.map(d => d.revenue);
+            revenueChart.update('none'); // 'none' untuk animasi smooth
+        }
+        
+        // 2. Fetch and update Platform Comparison Chart
+        const platformRes = await fetch(`${API_BASE}/platforms/comparison`);
+        if (!platformRes.ok) throw new Error('Platform data fetch failed');
+        
+        const platformData = await platformRes.json();
+        
+        if (platformChart && Array.isArray(platformData)) {
+            platformChart.data.labels = platformData.map(p => p.name);
+            platformChart.data.datasets[0].data = platformData.map(p => p.revenue);
+            platformChart.update('none');
+        }
+        
+    } catch (err) {
+        console.error('Error updating charts:', err);
+    }
+}
+
+// ==================== CURRENCY FUNCTIONS ====================
+
+/**
+ * Fetch latest exchange rates
+ */
+async function updateCurrencyRates() {
+    try {
+        const response = await fetch(`${API_BASE}/currency/rates`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.rates) {
+                exchangeRates = data.rates;
+            }
+        }
+    } catch (err) {
+        console.log('Using default exchange rates:', err.message);
+    }
+}
+
+/**
+ * Update UI when currency changes
+ */
+function updateCurrencyDisplay() {
+    // Add currency class to all value elements
+    const valueElements = document.querySelectorAll('.value');
+    valueElements.forEach(el => {
+        // Remove existing currency classes
+        el.classList.remove('currency-idr', 'currency-usd', 'currency-eur', 'currency-sgd');
+        // Add new currency class
+        el.classList.add(`currency-${currentCurrency.toLowerCase()}`);
+    });
+}
+
+// ==================== DASHBOARD DATA FUNCTIONS ====================
+
+/**
+ * Update overview cards with latest data
+ */
+async function updateOverviewCards() {
+    try {
+        const response = await fetch(`${API_BASE}/dashboard/overview`);
+        if (!response.ok) throw new Error('Overview data fetch failed');
+        
+        const data = await response.json();
+        
+        // Update each card
+        document.getElementById('totalRevenue').textContent = formatCurrency(data.totalRevenue);
+        document.getElementById('totalOrders').textContent = formatNumber(data.totalOrders);
+        document.getElementById('conversionRate').textContent = formatPercentage(data.conversionRate);
+        document.getElementById('activeUsers').textContent = formatNumber(data.activeUsers);
+        
+        // Update platform cards
+        const platformContainer = document.getElementById('platformCards');
+        if (platformContainer && data.platforms) {
+            platformContainer.innerHTML = '';
+            
+            data.platforms.forEach(platform => {
+                const platformCard = document.createElement('div');
+                platformCard.className = 'platform-card';
+                platformCard.innerHTML = `
+                    <div>
+                        <div class="platform-name">${platform.name}</div>
+                        <div class="platform-revenue">${formatCurrency(platform.revenue)}</div>
+                    </div>
+                    <div class="trend ${platform.change.includes('+') ? 'positive' : 'negative'}">
+                        ${platform.change}
+                    </div>
+                `;
+                platformContainer.appendChild(platformCard);
             });
         }
+        
+        // Update last update time
+        const lastUpdateEl = document.getElementById('lastUpdate');
+        if (lastUpdateEl) {
+            lastUpdateEl.textContent = `Last updated: ${new Date().toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            })}`;
+        }
+        
+    } catch (err) {
+        console.error('Error updating overview cards:', err);
+        // Show error in UI
+        document.getElementById('lastUpdate').textContent = 'Error loading data';
+    }
+}
 
-        // Inisialisasi saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("📄 DOM loaded, initializing...");
+/**
+ * Update real-time events feed
+ */
+async function updateRealtimeEvents() {
+    try {
+        const response = await fetch(`${API_BASE}/realtime/updates`);
+        if (!response.ok) throw new Error('Realtime data fetch failed');
+        
+        const data = await response.json();
+        const eventsContainer = document.getElementById('realtimeEvents');
+        
+        if (eventsContainer && data.events) {
+            eventsContainer.innerHTML = '';
             
-            // Update waktu setiap detik
-            setInterval(updateWaktuIndonesia, 1000);
-            updateWaktuIndonesia();
-            
-            // Inisialisasi dashboard
-            initDashboard();
-            
-            // Inisialisasi animasi kartu
-            initServiceCardAnimations();
+            data.events.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+                eventItem.innerHTML = `
+                    <i class="fas fa-bell"></i> 
+                    <span>${event}</span>
+                    <small>${new Date().toLocaleTimeString('id-ID', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    })}</small>
+                `;
+                eventsContainer.appendChild(eventItem);
+            });
+        }
+        
+    } catch (err) {
+        console.error('Error updating realtime events:', err);
+    }
+}
+
+/**
+ * Update platform status indicators
+ */
+async function updatePlatformStatus() {
+    try {
+        const response = await fetch(`${API_BASE}/platforms`);
+        if (!response.ok) throw new Error('Platform status fetch failed');
+        
+        const platforms = await response.json();
+        const platformCards = document.querySelectorAll('.platform-card');
+        
+        platformCards.forEach((card, index) => {
+            if (platforms[index]) {
+                // Remove existing status
+                const existingStatus = card.querySelector('.platform-status');
+                if (existingStatus) existingStatus.remove();
+                
+                // Add new status
+                const statusSpan = document.createElement('span');
+                const status = platforms[index].status.toLowerCase();
+                statusSpan.className = `platform-status status-${status}`;
+                statusSpan.textContent = platforms[index].status;
+                card.appendChild(statusSpan);
+            }
         });
+        
+    } catch (err) {
+        console.error('Error updating platform status:', err);
+    }
+}
+
+// ==================== EXPORT FUNCTIONS ====================
+
+/**
+ * Export dashboard data as JSON
+ */
+async function exportJsonReport() {
+    try {
+        const response = await fetch(`${API_BASE}/export/json`);
+        if (!response.ok) throw new Error('Export failed');
+        
+        const data = await response.json();
+        
+        // Create downloadable file
+        const blob = new Blob([JSON.stringify(data, null, 2)], { 
+            type: 'application/json' 
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        // Set filename with current date
+        const dateStr = new Date().toISOString().split('T')[0];
+        a.href = url;
+        a.download = `daesacorp-dashboard-${dateStr}.json`;
+        
+        // Trigger download
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        
+        // Show success notification
+        showNotification('Report downloaded successfully!', 'success');
+        
+    } catch (err) {
+        console.error('Export error:', err);
+        showNotification('Failed to export report', 'error');
+    }
+}
+
+/**
+ * Generate PDF summary (simulated)
+ */
+function exportPdfSummary() {
+    // This is a simulation - in production, use a PDF library
+    showNotification('PDF export is in development', 'info');
+    
+    // Simulate PDF generation
+    setTimeout(() => {
+        const pdfUrl = '#';
+        window.open(pdfUrl, '_blank');
+    }, 1000);
+}
+
+// ==================== NOTIFICATION SYSTEM ====================
+
+/**
+ * Show notification message
+ */
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// ==================== MAIN DASHBOARD UPDATE FUNCTION ====================
+
+/**
+ * Main function to update all dashboard components
+ */
+async function updateDashboard() {
+    console.log(`Updating dashboard with ${currentCurrency} currency...`);
+    
+    try {
+        // Update exchange rates first
+        await updateCurrencyRates();
+        
+        // Update all components in parallel for better performance
+        await Promise.all([
+            updateOverviewCards(),
+            updateRealtimeEvents(),
+            updatePlatformStatus(),
+            updateCharts()
+        ]);
+        
+        // Update currency display
+        updateCurrencyDisplay();
+        
+        console.log('Dashboard update complete');
+        
+    } catch (err) {
+        console.error('Dashboard update error:', err);
+        showNotification('Failed to update dashboard data', 'error');
+    }
+}
+
+// ==================== EVENT LISTENERS ====================
+
+/**
+ * Setup all event listeners
+ */
+function setupEventListeners() {
+    // Currency switcher
+    const currencySelect = document.getElementById('currencySelect');
+    if (currencySelect) {
+        currencySelect.addEventListener('change', function(e) {
+            currentCurrency = e.target.value;
+            updateDashboard();
+        });
+    }
+    
+    // Export buttons
+    const exportJsonBtn = document.getElementById('exportJson');
+    if (exportJsonBtn) {
+        exportJsonBtn.addEventListener('click', exportJsonReport);
+    }
+    
+    const exportPdfBtn = document.getElementById('exportSummary');
+    if (exportPdfBtn) {
+        exportPdfBtn.addEventListener('click', exportPdfSummary);
+    }
+    
+    // Manual refresh button (optional - add in HTML if needed)
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', updateDashboard);
+    }
+    
+    console.log('Event listeners setup complete');
+}
+
+// ==================== INITIALIZATION ====================
+
+/**
+ * Initialize the dashboard when page loads
+ */
+async function initializeDashboard() {
+    console.log('Initializing enhanced dashboard...');
+    
+    try {
+        // 1. Initialize Chart.js charts
+        initializeCharts();
+        
+        // 2. Setup event listeners
+        setupEventListeners();
+        
+        // 3. Load initial data
+        await updateDashboard();
+        
+        // 4. Start auto-refresh (every 30 seconds)
+        setInterval(updateDashboard, 30000);
+        
+        console.log('Dashboard initialized successfully!');
+        showNotification('Dashboard loaded and auto-refresh enabled', 'success');
+        
+    } catch (err) {
+        console.error('Dashboard initialization failed:', err);
+        showNotification('Failed to initialize dashboard', 'error');
+    }
+}
+
+// ==================== START THE DASHBOARD ====================
+
+// Wait for DOM to be fully loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDashboard);
+} else {
+    initializeDashboard();
+}

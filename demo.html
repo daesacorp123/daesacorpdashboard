@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
+<!-- Di HEAD section -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Tambahkan ini di dalam <header>, setelah last-update -->
+<div class="currency-switcher">
+  <select id="currencySelect">
+    <option value="IDR">🇮🇩 IDR</option>
+    <option value="USD">🇺🇸 USD</option>
+    <option value="EUR">🇪🇺 EUR</option>
+    <option value="SGD">🇸🇬 SGD</option>
+  </select>
+</div>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo Dashboard Real-time - DaeSaCorp</title>
@@ -406,6 +420,34 @@
                 </div>
             </div>
         </div>
+
+
+<!-- Tambahkan setelah .main-content, sebelum footer -->
+<div class="charts-section">
+  <div class="chart-container">
+    <h2><i class="fas fa-chart-line"></i> Revenue Trend (7 Days)</h2>
+    <canvas id="revenueChart"></canvas>
+  </div>
+  
+  <div class="chart-container">
+    <h2><i class="fas fa-chart-bar"></i> Platform Performance</h2>
+    <canvas id="platformChart"></canvas>
+  </div>
+</div>
+
+<!-- Export section -->
+<div class="export-section">
+  <h2><i class="fas fa-download"></i> Export Data</h2>
+  <div class="export-options">
+    <button class="export-btn" id="exportJson">
+      <i class="fas fa-file-code"></i> Download JSON Report
+    </button>
+    <button class="export-btn" id="exportSummary">
+      <i class="fas fa-file-pdf"></i> Generate PDF Summary
+    </button>
+  </div>
+</div>
+
 
         <!-- Overview Metrics -->
         <div class="overview-metrics" id="overviewMetrics">
@@ -870,5 +912,201 @@
             window.dashboard = new RealTimeDashboard();
         });
     </script>
+
+<!-- Include notification system -->
+<script src="notifications.js"></script>
+
+<!-- Include preferences panel -->
+<script>
+    // Simple inline preferences
+    document.addEventListener('DOMContentLoaded', function() {
+        const settingsToggle = document.getElementById('settingsToggle');
+        const preferencesPanel = document.getElementById('preferencesPanel');
+        
+        if (settingsToggle && preferencesPanel) {
+            settingsToggle.addEventListener('click', () => {
+                preferencesPanel.classList.toggle('show');
+            });
+            
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!preferencesPanel.contains(e.target) && 
+                    !settingsToggle.contains(e.target)) {
+                    preferencesPanel.classList.remove('show');
+                }
+            });
+        }
+    });
+</script>
+
+
+<!-- SIMPLE SETTINGS BUTTON -->
+<div class="simple-settings" id="simpleSettings">
+    ⚙️
+</div>
+
+<!-- SIMPLE NOTIFICATIONS CONTAINER -->
+<div id="simpleNotifications" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+"></div>
+
+<script>
+// SIMPLE NOTIFICATION FUNCTION
+function showSimpleMsg(text, type = 'info') {
+    const colors = {
+        success: '#2ecc71',
+        error: '#e74c3c',
+        warning: '#f39c12',
+        info: '#3498db'
+    };
+    
+    const div = document.createElement('div');
+    div.style.cssText = `
+        background: white;
+        color: #333;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border-left: 5px solid ${colors[type] || colors.info};
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    div.innerHTML = `
+        <span style="font-size: 18px;">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
+        <span>${text}</span>
+    `;
+    
+    const container = document.getElementById('simpleNotifications');
+    container.appendChild(div);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        div.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => div.remove(), 300);
+    }, 5000);
+}
+
+// SIMPLE SETTINGS
+document.getElementById('simpleSettings').addEventListener('click', function() {
+    const settings = `
+        <div style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10000;
+            min-width: 300px;
+        ">
+            <h3 style="margin-top: 0;">⚙️ Settings</h3>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">
+                    🔄 Auto-refresh
+                </label>
+                <select id="refreshSelect" style="
+                    width: 100%;
+                    padding: 8px;
+                    border-radius: 6px;
+                    border: 1px solid #ddd;
+                ">
+                    <option value="15000">15 detik</option>
+                    <option value="30000" selected>30 detik</option>
+                    <option value="60000">1 menit</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">
+                    🎨 Tema
+                </label>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="document.body.style.background='#f5f7fa'" style="
+                        padding: 10px; background: #f5f7fa; border: 2px solid #3498db;
+                        border-radius: 6px; cursor: pointer;
+                    ">Terang</button>
+                    <button onclick="document.body.style.background='#2c3e50'; document.body.style.color='white'" style="
+                        padding: 10px; background: #2c3e50; color: white;
+                        border-radius: 6px; cursor: pointer;
+                    ">Gelap</button>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="showSimpleMsg('Settings disimpan!', 'success'); this.closest('div').remove()" style="
+                    flex: 1; padding: 10px; background: #3498db;
+                    color: white; border: none; border-radius: 6px;
+                    cursor: pointer; font-weight: bold;
+                ">
+                    💾 Simpan
+                </button>
+                <button onclick="this.closest('div').remove()" style="
+                    flex: 1; padding: 10px; background: #e74c3c;
+                    color: white; border: none; border-radius: 6px;
+                    cursor: pointer; font-weight: bold;
+                ">
+                    ❌ Tutup
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing settings if any
+    const existing = document.querySelector('[style*="position: fixed; top: 50%"]');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', settings);
+});
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100px); opacity: 0; }
+    }
+    
+    .simple-settings {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #3498db;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        z-index: 999;
+        transition: transform 0.3s;
+    }
+    
+    .simple-settings:hover {
+        transform: scale(1.1);
+        background: #2980b9;
+    }
+`;
+document.head.appendChild(style);
+</script>
+
+
 </body>
 </html>

@@ -673,3 +673,351 @@ p {
         max-width: 300px;
     }
 }
+/* Currency Switcher */
+.currency-switcher select {
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  background: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Charts Section */
+.charts-section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin: 30px 0;
+}
+
+.chart-container {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.chart-container h2 {
+  margin-bottom: 20px;
+}
+
+/* Export Section */
+.export-section {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  margin: 30px 0;
+}
+
+.export-options {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.export-btn {
+  padding: 12px 25px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.3s;
+}
+
+.export-btn:hover {
+  background: #2980b9;
+}
+
+.export-btn i {
+  font-size: 18px;
+}
+
+/* Currency formatting */
+.currency-idr::before {
+  content: 'Rp ';
+}
+
+.currency-usd::before {
+  content: '$ ';
+}
+
+.currency-eur::before {
+  content: '€ ';
+}
+
+.currency-sgd::before {
+  content: 'S$ ';
+}
+
+@media (max-width: 768px) {
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .export-options {
+    flex-direction: column;
+  }
+}
+
+/* ==================== NOTIFICATION SYSTEM ==================== */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+}
+
+.notification {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    border-left: 5px solid #3498db;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-icon {
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-message {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.notification-close:hover {
+    background: #f8f9fa;
+    color: #e74c3c;
+}
+
+/* Notification Types */
+.notification-success {
+    border-left-color: #2ecc71;
+}
+
+.notification-success .notification-icon {
+    color: #2ecc71;
+    background: rgba(46, 204, 113, 0.1);
+}
+
+.notification-error {
+    border-left-color: #e74c3c;
+}
+
+.notification-error .notification-icon {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.notification-warning {
+    border-left-color: #f39c12;
+}
+
+.notification-warning .notification-icon {
+    color: #f39c12;
+    background: rgba(243, 156, 18, 0.1);
+}
+
+.notification-info {
+    border-left-color: #3498db;
+}
+
+.notification-info .notification-icon {
+    color: #3498db;
+    background: rgba(52, 152, 219, 0.1);
+}
+
+/* ==================== USER PREFERENCES ==================== */
+.preferences-panel {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: none;
+}
+
+.preferences-panel.show {
+    display: block;
+}
+
+.preference-item {
+    margin-bottom: 15px;
+}
+
+.preference-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.preference-item select,
+.preference-item input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.theme-selector {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.theme-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.theme-option.active {
+    border-color: #3498db;
+}
+
+.theme-light { background: #ffffff; border: 1px solid #ddd; }
+.theme-dark { background: #2c3e50; }
+.theme-blue { background: #3498db; }
+.theme-green { background: #2ecc71; }
+
+/* ==================== ALERT BADGES ==================== */
+.alert-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e74c3c;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==================== SETTINGS BUTTON ==================== */
+.settings-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #3498db;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+    transition: transform 0.3s;
+    z-index: 1000;
+}
+
+.settings-button:hover {
+    transform: scale(1.1);
+    background: #2980b9;
+}
+
+/* ==================== DARK THEME ==================== */
+body.dark-theme {
+    background: #1a1a2e;
+    color: #ffffff;
+}
+
+body.dark-theme .card,
+body.dark-theme .platforms,
+body.dark-theme .realtime,
+body.dark-theme .chart-container,
+body.dark-theme .export-section,
+body.dark-theme header {
+    background: #16213e;
+    color: #ffffff;
+    border: 1px solid #2c3e50;
+}
+
+body.dark-theme .platform-card {
+    background: #0f3460;
+}
+
+body.dark-theme .event-item {
+    background: #0f3460;
+}
+
+body.dark-theme .notification {
+    background: #16213e;
+    color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .notification-container {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+    
+    .settings-button {
+        bottom: 70px;
+    }
+    
+    .preferences-panel {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+    }
+}
